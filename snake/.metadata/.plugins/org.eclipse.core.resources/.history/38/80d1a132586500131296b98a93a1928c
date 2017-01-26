@@ -1,0 +1,26 @@
+import javax.swing.JFrame;
+import java.awt.Component;
+import java.io.*;
+
+public class SnakeRunner extends JFrame {//started 10:34
+	public static final int WIDTH = 800;
+	public static final int HEIGHT = 800;
+    public SnakeRunner() throws IOException
+    {
+    	super("SNAKE!");
+    	setSize(WIDTH,HEIGHT);
+    	setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	SnakePanel l = new SnakePanel();
+    	((Component)l).setFocusable(true);
+    	getContentPane().add(l);
+    	setVisible(true);
+    }   
+    public static void main(String args[])
+    {
+    	try {
+			new SnakeRunner();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+    }
+}

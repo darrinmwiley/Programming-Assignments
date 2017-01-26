@@ -1,0 +1,65 @@
+
+public class Segment extends Entity{
+	private Segment head;
+	private Segment tail;
+	private int direction; // up down left right 1 2 3 4
+	boolean tailflag = false;
+	Segment(int x, int y, Segment head, Segment tail,int direction)
+	{
+		super(x,y);
+		this.head = head;
+		this.tail = tail;
+		this.direction = direction;
+	}
+	
+	public Segment getTail()
+	{
+		return tail;
+	}
+	
+	public Segment getHead()
+	{
+		return head;
+	}
+	
+	public int getDirection()
+	{
+		return direction;
+	}
+	
+	public void addTail()
+	{
+		if(tail==null)
+			tailflag = true;
+		else
+			tail.addTail();
+	}
+	public void move(Entity[][] field)
+	{
+		if(tail!=null)
+			tail.move(field);
+		if(head!=null){
+			x = head.getX();
+			y = head.getY();
+		}else{
+			int dx = -1;
+			int dy = 0;
+			switch(direction){
+			case 1:dy = -1;dx = 0;break;
+			case 2:dy = 1;dx = 0;break;
+			case 3:dx = 1;dy = 0;break;
+			}
+			x = x+dx;
+			y = y+dy;
+			if(field[y][x] instanceof Food)
+				addTail();
+		}if(tailflag){
+			tailflag = false;
+			tail = new Segment(x,y,this,null,0);
+		}
+	}
+	public void setDirection(int n)
+	{
+		direction = n;
+	}
+}

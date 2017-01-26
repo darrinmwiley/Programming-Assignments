@@ -1,0 +1,236 @@
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Image;
+import java.io.File;
+import java.awt.Graphics2D;
+import java.awt.Canvas;
+import java.awt.event.*;
+import static java.lang.Character.*;
+import static java.lang.System.*;
+import java.awt.image.BufferedImage;
+import java.awt.event.ActionListener;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+import javax.imageio.ImageIO;
+import javax.swing.JPanel;
+
+import java.lang.*;
+import java.util.*;
+import java.awt.*;
+import java.io.*;
+
+public class SnakePanel extends JPanel implements KeyListener,MouseListener
+{
+	Entity[][] field;
+	Segment head;
+	Timer timer = new Timer();
+	TimerTask t = new TimerTask(){
+		@Override
+		public void run() {
+			updateLogic();
+	        repaint();
+		}};
+	public SnakePanel()
+	{		
+		addMouseListener(this);
+		this.addKeyListener(this);
+		setup();
+	}
+	public void setup()
+	{	
+		//displayTitle();
+		//read in r and c later
+		int r = 10;
+		int c = 10;
+		field = new Entity[r][c];
+		head = new Segment(c/2,r/2,null,null,3);
+		field[head.getY()][head.getX()] = head;
+		readScores();
+		timer.scheduleAtFixedRate(t,0,250);
+		setVisible(true);
+	}
+	public void placeRandomFood()
+	{
+		while(true)
+		{
+			int r = (int)(Math.random()*field.length);
+			int c = (int)(Math.random()*field[r].length);
+			if(field[r][c]==null)
+			{
+				field[r][c] = new Food(c,r);
+				return;
+			}
+		}
+	}
+	public void readScores()
+	{
+	}
+	public void insertScore(int i)
+	{
+	}
+	public void writeScores()
+	{
+	}
+	public void displayTitle()
+	{
+		
+	}
+    /*public void update()
+    {
+   		repaint();
+    }*/
+	public boolean isNoFood()
+	{
+		for(int r = 0;r<field.length;r++)
+		{
+			for(int c = 0;c<field.length;c++)
+			{
+				if(field[r][c] instanceof Food)
+					return false;
+			}
+		}
+		return true;
+	}
+	public void updateLogic()
+	{
+		head.move(field);
+		for(int r = 0;r<field.length;r++)
+		{
+			for(int c = 0;c<field[r].length;c++)
+			{
+				if(!(field[r][c] instanceof Food))
+					field[r][c] = null;
+			}
+		}
+		Segment seg = head;
+		while(seg!=null)
+		{
+			if(field[seg.getY()][seg.getX()] instanceof Segment)
+				lose();
+			field[seg.getY()][seg.getX()] = seg;
+			seg = seg.getTail();
+		}
+		if(isNoFood())
+			placeRandomFood();
+	}
+	public void paintComponent( Graphics g )
+	{
+		Graphics2D twoDGraph = (Graphics2D)g;
+		BufferedImage back = (BufferedImage)(createImage(field[0].length*16,field.length*16));
+		Graphics window = back.createGraphics();
+		int wid = back.getWidth();
+		int ht = back.getHeight();
+		window.setColor(Color.BLACK);
+		window.fillRect(0, 0, wid, ht);
+
+		for(int r = 0;r<field.length;r++)
+		{
+			for(int c = 0;c<field[r].length;c++)
+			{
+				Entity e = field[r][c];
+				if(e instanceof Food)
+				{
+					window.setColor(Color.CYAN);
+					window.fillRect(c*16+2, r*16+2, 12, 12);
+				}
+				else if( e instanceof Segment)
+				{
+					window.setColor(Color.GREEN);
+					window.fillRect(c*16+2, r*16+2, 12, 12);	
+				}
+			}
+		}
+		twoDGraph.drawImage(back,AffineTransform.getScaleInstance(getWidth()/(0.0+wid), getHeight()/(0.0+ht)), null);			
+	}
+	public void lose()
+	{
+		timer.cancel();
+		setup();
+		//System.exit(0);
+	}
+	public void mousePressed(MouseEvent e)
+	{
+	}
+	public void mouseEntered(MouseEvent e)
+	{
+	}
+	public void mouseClicked(MouseEvent e)
+	{
+	}
+	public void renderScores(Graphics window)
+	{
+	}
+	public void renderOptions(Graphics window)
+	{
+	}
+	public void mouseReleased(MouseEvent e)
+	{
+	}
+	public void mouseExited(MouseEvent e)
+	{
+	}
+	public void keyPressed(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_LEFT||e.getKeyCode() == KeyEvent.VK_A)
+		{
+			head.setDirection(4);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT||e.getKeyCode() == KeyEvent.VK_D)
+		{
+			head.setDirection(3);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_UP||e.getKeyCode() == KeyEvent.VK_W)
+		{
+			head.setDirection(1);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN||e.getKeyCode() == KeyEvent.VK_S)
+		{
+			head.setDirection(2);
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE||e.getKeyCode() == KeyEvent.VK_E)
+		{
+		}
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE)
+		{
+			System.exit(0);
+		}
+		repaint();
+	}
+	public void keyReleased(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_UP)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_DOWN)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_F)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_D)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_W)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_S)
+		{
+		}
+		if (e.getKeyCode() == KeyEvent.VK_A)
+		{
+		}
+		repaint();
+	}
+	public void keyTyped(KeyEvent e)
+	{
+	}
+}

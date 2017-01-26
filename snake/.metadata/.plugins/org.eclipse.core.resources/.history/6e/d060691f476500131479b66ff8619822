@@ -1,0 +1,17 @@
+import javax.swing.JFrame;
+import java.awt.Component;
+ 
+public class SnakeRunner extends JFrame {
+	private static final int WIDTH = 900;
+	private static final int HEIGHT = 900;
+    
+    public static void main(String[] args) {
+    	super("Snake!");
+    	setSize(WIDTH,HEIGHT);
+    	GamePanel l = new GamePanel();
+    	((Component)l).setFocusable(true);
+    	getContentPane().add(l);
+    	setVisible(true);
+    }
+    labyrinth run = new labyrinth();
+}

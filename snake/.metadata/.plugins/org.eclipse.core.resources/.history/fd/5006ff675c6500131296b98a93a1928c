@@ -1,0 +1,34 @@
+
+public class Segment extends Entity{
+	private Segment head;
+	private Segment tail;
+	private int direction; // up down left right 1 2 3 4
+	
+	private Segment(int x, int y, Segment head, Segment tail)
+	{
+		super(x,y);
+		this.head = head;
+		this.tail = tail;
+	}
+	
+	public Segment getTail()
+	{
+		return tail;
+	}
+	
+	public Segment getHead()
+	{
+		return head;
+	}
+	
+	public int getDirection()
+	{
+		return direction;
+	}
+	
+	public Segment addTail()
+	{
+		//must move before adding tail
+		return new Segment(x,y,this,null);
+	}
+}
